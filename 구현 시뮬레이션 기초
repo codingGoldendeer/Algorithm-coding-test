@@ -1,0 +1,45 @@
+import sys
+input = sys.stdin.readline
+
+n, m = map(int, input().split())
+x, y, d = map(int, input().split())
+mapBlock = []
+for _ in range(n):
+    mapList = list(map(int, input().split()))
+    mapBlock.append(mapList)
+
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
+result = 0
+turn_count = 0
+
+while True:
+    d -= 1
+    if d == -1:
+        d = 3
+
+    nx = x + dx[d]
+    ny = y + dy[d]
+
+    if mapBlock[nx][ny] == 1 or mapBlock[nx][ny] == 2:
+        turn_count += 1
+
+    if mapBlock[nx][ny] == 0:
+        x = nx
+        y = ny
+        mapBlock[x][y] = 2
+        result += 1
+        turn_count = 0
+
+    if turn_count == 4:
+        nx = x - dx[d]
+        ny = y - dy[d]
+
+        if mapBlock[nx][ny] == 1:
+            break
+        else:
+            x = nx
+            y = ny
+            turn_count = 0
+
+print(result)
