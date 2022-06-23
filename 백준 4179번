@@ -1,0 +1,53 @@
+from collections import deque
+
+r, c = map(int, input().split())
+dx = [1, -1, 0, 0]
+dy = [0, 0, 1, -1]
+maze = []
+for _ in range(r):
+    maze.append(list(input()))
+
+j_visited = [[0] * c for _ in range(r)]
+f_visited = [[0] * c for _ in range(r)]
+j_queue = deque([])
+f_queue = deque([])
+for i in range(r):
+    for j in range(c):
+        if maze[i][j] == 'J':
+            j_queue.append([i, j])
+        elif maze[i][j] == 'F':
+            f_queue.append([i, j])
+
+def escape():
+    while f_queue:
+        x, y = f_queue.popleft()
+
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+
+            if 0 <= nx < r and 0 <= ny < c:
+                if f_visited[nx][ny] == 0 and maze[nx][ny] != '#':
+                    f_visited[nx][ny] = f_visited[x][y] + 1
+                    f_queue.append([nx, ny])
+
+    while j_queue:
+        x, y = j_queue.popleft()
+
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+
+            if 0 <= nx < r and 0 <= ny < c:
+                if j_visited[nx][ny] == 0 and maze[nx][ny] != '#':
+                    if not f_visited[nx][ny] or f_visited[nx][ny] > j_visited[x][y] + 1:
+                        j_visited[nx][ny] = j_visited[x][y] + 1
+                        j_queue.append([nx, ny])
+
+            else:
+                return j_visited[x][y] + 1
+
+    return 'IMPOSSIBLE'
+
+result = escape()
+print(result)
