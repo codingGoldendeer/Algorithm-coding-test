@@ -1,0 +1,43 @@
+import sys
+from collections import deque
+input = sys.stdin.readline
+
+m, n, h = map(int, input().split())
+tomatoes = []
+for _ in range(h):
+    tomato = []
+    for _ in range(n):
+        tomato.append(list(map(int, input().split())))
+    tomatoes.append(tomato)
+
+queue = deque([])
+for i in range(h):
+    for j in range(n):
+        for k in range(m):
+            if tomatoes[i][j][k] == 1:
+                queue.append([i, j, k])
+
+steps = [[0, 0, 1], [0, 0, -1], [1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0]]
+while queue:
+    x, y, z = queue.popleft()
+
+    for i in range(6):
+        nx = x + steps[i][0]
+        ny = y + steps[i][1]
+        nz = z + steps[i][2]
+
+        if (0 <= nx < h) and (0 <= ny < n) and (0 <= nz < m):
+            if tomatoes[nx][ny][nz] == 0:
+                tomatoes[nx][ny][nz] = tomatoes[x][y][z] + 1
+                queue.append([nx, ny, nz])
+
+result = 0
+for i in range(h):
+    for j in range(n):
+        for k in range(m):
+            if tomatoes[i][j][k] == 0:
+                print(-1)
+                exit(0)
+            result = max(result, tomatoes[i][j][k])
+
+print(result-1)
