@@ -1,0 +1,46 @@
+from collections import deque
+import copy
+
+n = int(input())
+graph1 = []
+for _ in range(n):
+    graph1.append(list(input()))
+graph2 = copy.deepcopy(graph1)
+for i in range(n):
+    for j in range(n):
+        if graph2[i][j] == 'G':
+            graph2[i][j] = 'R'
+
+visited1 = [[False] * n for _ in range(n)]
+visited2 = [[False] * n for _ in range(n)]
+cnt1 = 0
+cnt2 = 0
+
+def bfs(x, y, graph, visited):
+    queue = deque([[x, y]])
+    visited[x][y] = True
+    dx = [1, -1, 0, 0]
+    dy = [0, 0, 1, -1]
+
+    while queue:
+        x, y = queue.popleft()
+
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+
+            if 0 <= nx < n and 0 <= ny < n:
+                if graph[nx][ny] == graph[x][y] and not visited[nx][ny]:
+                    queue.append([nx, ny])
+                    visited[nx][ny] = True
+
+for i in range(n):
+    for j in range(n):
+        if not visited1[i][j]:
+            bfs(i, j, graph1, visited1)
+            cnt1 += 1
+        if not visited2[i][j]:
+            bfs(i, j, graph2, visited2)
+            cnt2 += 1
+
+print(cnt1, cnt2)
